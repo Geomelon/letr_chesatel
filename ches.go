@@ -48,5 +48,6 @@ func main() {
 		fmt.Println("---пусто---")
 	}
 	emptyServer = true
-
+	var n string
+	fmt.Scan(&n)
 }
