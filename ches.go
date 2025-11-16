@@ -8,8 +8,14 @@ import (
 )
 
 func main() {
-	fmt.Println("Check boobies")
-	babydoll := colly.NewCollector()
-	babydoll.Visit("https://letragon.ru/servers/mt/")
 
+	babydoll := colly.NewCollector()
+	babydoll.UserAgent = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36")
+
+	// var users []string
+	babydoll.OnHTML(".user-server", func(userLink *colly.HTMLElement) {
+		fmt.Println(" Aboba ", userLink.Text)
+	})
+
+	babydoll.Visit("https://letragon.ru/servers/mt/")
 }
