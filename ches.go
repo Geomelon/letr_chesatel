@@ -5,56 +5,48 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 
 	"github.com/gocolly/colly"
 )
 
+var EmptyFlag = true
+
 func main() {
 	for {
 		clearScreen()
-
-		emptyServer := true
 		babydoll := colly.NewCollector()
 		babydoll.UserAgent = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36")
 
 		babydoll.OnHTML(".user-server b", func(userLink *colly.HTMLElement) {
 			fmt.Println(" ", userLink.Text)
-			emptyServer = false
+			EmptyFlag = false
 		})
 
 		fmt.Println("Players Online:")
-		fmt.Println("\nPOWER TECH")
-		babydoll.Visit("https://letragon.ru/servers/pt/")
-		if emptyServer {
-			fmt.Println("---пусто---")
-		}
-		emptyServer = true
-		fmt.Println("\nHEAVY TECH")
-		babydoll.Visit("https://letragon.ru/servers/ht/")
-		if emptyServer {
-			fmt.Println("---пусто---")
-		}
-		emptyServer = true
-		fmt.Println("\nMAGIC")
-		babydoll.Visit("https://letragon.ru/servers/m/")
-		if emptyServer {
-			fmt.Println("---пусто---")
-		}
-		emptyServer = true
-		fmt.Println("\nMISUSE TECH")
-		babydoll.Visit("https://letragon.ru/servers/mt/")
-		if emptyServer {
-			fmt.Println("---пусто---")
-		}
-		emptyServer = true
-		fmt.Println("\nNEVER CHANGE")
-		babydoll.Visit("https://letragon.ru/servers/nc/")
-		if emptyServer {
-			fmt.Println("---пусто---")
-		}
+
+		scrubServer("POWER TECH", babydoll)
+		scrubServer("HEAVY TECH", babydoll)
+		scrubServer("MAGIC", babydoll)
+		scrubServer("MISUSE TECH", babydoll)
+		scrubServer("NEVER CHANGE", babydoll)
 
 		time.Sleep(60 * time.Second)
+	}
+}
+
+func scrubServer(serverName string, babydoll *colly.Collector) {
+	EmptyFlag = true
+	fmt.Println("\n" + serverName)
+	words := strings.Fields(serverName)
+	var firstLetters string
+	for _, word := range words {
+		firstLetters += strings.ToLower(string(word[0]))
+	}
+	babydoll.Visit("https://letragon.ru/servers/" + firstLetters)
+	if EmptyFlag {
+		fmt.Println("---пусто---")
 	}
 }
 
